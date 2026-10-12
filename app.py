@@ -10,6 +10,17 @@ import shutil
 import gc
 import threading
 import base64
+import edge_tts.communicate as edge_tts_communicate
+from edge_tts.constants import TRUSTED_CLIENT_TOKEN
+
+
+# Microsoft is migrating traffic away from the legacy speech.platform.bing.com
+# host. Keep the current Sec-MS-GEC token generation from edge-tts 7.2.8, but
+# use the newer host that currently accepts that token format in more regions.
+edge_tts_communicate.WSS_URL = (
+    "wss://api.msedgeservices.com/tts/cognitiveservices/websocket/v1"
+    f"?Ocp-Apim-Subscription-Key={TRUSTED_CLIENT_TOKEN}"
+)
 
 
 # ─────────────────────────────────────────────
