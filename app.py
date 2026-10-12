@@ -312,7 +312,21 @@ async def generate_tts_async(text, output_path, voice_id, speed, pitch):
     real_voice = VOICE_MAP.get(voice_id, "my-MM-ThihaNeural")
     rate_str = f"+{speed}%" if speed >= 0 else f"{speed}%"
     pitch_str = f"+{pitch}Hz" if pitch >= 0 else f"{pitch}Hz"
-    communicate = edge_tts.Communicate(text, real_voice, rate=rate_str, pitch=pitch_str)
+    # Microsoft is rolling out a newer Edge TTS backend by region. An optional
+    # proxy lets deployments whose datacenter IP receives 403 route only TTS
+    # traffic through a permitted region without changing the whole app.
+    try:
+        tts_proxy = st.secrets.get("EDGE_TTS_PROXY", "")
+    except Exception:
+        tts_proxy = ""
+    tts_proxy = tts_proxy or os.getenv("EDGE_TTS_PROXY", "")
+    communicate = edge_tts.Communicate(
+        text,
+        real_voice,
+        rate=rate_str,
+        pitch=pitch_str,
+        proxy=tts_proxy or None,
+    )
     await communicate.save(output_path)
     return output_path
 

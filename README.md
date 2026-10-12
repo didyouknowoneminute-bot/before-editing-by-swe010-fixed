@@ -56,6 +56,21 @@ brew install ffmpeg
 # Download from https://ffmpeg.org/download.html
 ```
 
+### Edge TTS 403 workaround
+
+Microsoft is gradually moving Edge Read Aloud traffic to a newer backend. Some
+hosting regions may temporarily return `403 Invalid response status` to the
+legacy Edge TTS endpoint. The app supports an optional proxy for TTS traffic
+only. Set `EDGE_TTS_PROXY` in Streamlit Secrets or as an environment variable:
+
+```toml
+EDGE_TTS_PROXY = "http://proxy-host:proxy-port"
+```
+
+Use a proxy that you are authorized to use. Do not commit proxy credentials to
+the repository. The app still works without this setting in regions where the
+Edge TTS endpoint accepts the deployment IP.
+
 ## Usage
 
 Run the Streamlit application:
